@@ -27,3 +27,24 @@ def partition(arr, start_index, end_index):
             high -= 1
 
     return high
+
+
+def quickS(array, start_index, end_index):
+    """
+    :param array:
+    :type array:
+    :param start_index:
+    :type start_index:
+    :param end_index:
+    :type end_index:
+    :return:
+    :rtype:
+    """
+    partition(array, start_index, end_index)
+
+    if end_index <= start_index:
+        return
+
+    high = partition(array, start_index, end_index)
+    quickS(array, start_index, high)
+    quickS(array, high + 1, end_index)

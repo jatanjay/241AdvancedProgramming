@@ -15,8 +15,10 @@ import csv
 import random
 import time
 
-from partition import partition
+from sort_quick import quickS
 
+
+# from partition import quickS
 
 # import csv
 # import random
@@ -25,6 +27,10 @@ from partition import partition
 
 
 class Song:
+    """
+    Class song ::
+    """
+
     def __init__(self, trial_song):
         self.title = trial_song[1].strip()
         self.artist = trial_song[2].strip()
@@ -34,6 +40,10 @@ class Song:
     # self.serial = trial_song[0]
 
     def display(self):
+        """
+        :return:
+        :rtype:
+        """
         print(
             f" \n Song Name : {self.title}\n Artist : {self.artist}\n Time Durations : {self.song_duration}\n Song Id "
             f": "
@@ -94,16 +104,6 @@ class SongLibrary:
         else:
             print(f"\nNot found!")
 
-    def quickS(self, array, start_index, end_index):
-        partition(array, start_index, end_index)
-
-        if end_index <= start_index:
-            return
-
-        high = partition(array, start_index, end_index)
-        self.quickS(array, start_index, high)
-        self.quickS(array, high + 1, end_index)
-
     def quickSort(self):
         """
         Quick sort algorithm to sort the song database based on the song title
@@ -112,8 +112,13 @@ class SongLibrary:
         :rtype:
         """
         arr = self.song_array
-        self.quickS(arr, 0, len(arr) - 1)
+        quickS(arr, 0, self.library_size - 1)
         self.library_isSorted = True
+
+        # j = 1
+        # r = (self.song_array[:10])
+        # for i in r:
+        #     print(i.title)
 
     def random_songs(self):
         """
@@ -122,19 +127,15 @@ class SongLibrary:
         :return:
         :rtype:
         """
-        # j = 1
-        # r = (self.song_array[:10])
-        # for i in r:
-        #     print(i.title)
 
         songs_random = random.sample(self.song_array, k=100)
         songs_random = [song_obj.title for song_obj in songs_random]
         # print(songs_random[:5])
         return songs_random
 
-    def performLinearSearch(self):
+    def performSearches(self):
         """
-        Performs a linear search in the sorted database for those 100
+        Performs all required searches in the sorted database for those 100
         songs. Record the total time spent on the linear searches.
         """
         time_start = time.time()
@@ -142,6 +143,9 @@ class SongLibrary:
             self.linearSearch(query=song_title, attribute='title')
         time_end = time.time()
         print(f"\nLinear Search took a total of {time_end - time_start} secs for 100 Random Songs")
+
+    def BST(self):
+        pass
 
 
 if __name__ == '__main__':
@@ -160,4 +164,4 @@ if __name__ == '__main__':
     # print(SongLib.linearSearch('A Boy Named Sue', 'title'))
 
     SongLib.quickSort()
-    SongLib.performLinearSearch()
+    SongLib.performSearches()
