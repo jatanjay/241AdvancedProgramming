@@ -11,12 +11,7 @@ and SongLibrary. You will use one instance of the Song class for each song and o
 instance of the SongLibrary class for your song library.
 """
 
-import csv
-import random
-import time
-
-from sort_quick import quickS
-
+# from avl import Node, AVLTree
 
 # from partition import quickS
 
@@ -26,28 +21,15 @@ from sort_quick import quickS
 # import time
 
 
-class Song:
-    """
-    Class song ::
-    """
+import csv
+import random
+import time
+import math
 
-    def __init__(self, trial_song):
-        self.title = trial_song[1].strip()
-        self.artist = trial_song[2].strip()
-        self.song_duration = trial_song[3]
-        self.track_ID = trial_song[4]
-
-    # self.serial = trial_song[0]
-
-    def display(self):
-        """
-        :return:
-        :rtype:
-        """
-        print(
-            f" \n Song Name : {self.title}\n Artist : {self.artist}\n Time Durations : {self.song_duration}\n Song Id "
-            f": "
-            f"{self.track_ID}")
+from sort_quick import quickS
+from avl import AVLTree
+from Node import Node
+from Song import Song
 
 
 class SongLibrary:
@@ -55,6 +37,10 @@ class SongLibrary:
         self.song_array = []
         self.library_size = 0
         self.library_isSorted = False
+        self.BST = None
+        self.bst_buildTime = 0
+        self.bst_runtime = float()
+        self.linear_runtime = float()
 
     def loadLibrary(self, file_name):
         """
@@ -66,13 +52,34 @@ class SongLibrary:
         :rtype: list
         """
 
-        with open(file=file_name, mode='r', encoding='utf-8') as csv_file:
+        with open(file=file_name, mode="r", encoding="utf-8") as csv_file:
             reader = csv.reader(csv_file, skipinitialspace=True)
             for song_detail in reader:
                 # print(song_detail)
                 # print(type(song_detail))
                 self.song_array.append(Song(song_detail))
                 self.library_size += 1
+
+        # j = 1
+        # r = (self.song_array[:5])
+        # for i in r:
+        #     print(i.title)
+
+    def quickSort(self):
+        """
+        Quick sort algorithm to sort the song database based on the song title
+        Once sorted --> the status of the Boolean variable is changed
+        :return:
+        :rtype:
+        """
+        arr = self.song_array
+        quickS(arr, 0, self.library_size - 1)
+        self.library_isSorted = True
+
+        # j = 1
+        # r = (self.song_array[:5])
+        # for i in r:
+        #     print(i.title)
 
     def linearSearch(self, query, attribute):
         """
@@ -101,24 +108,43 @@ class SongLibrary:
 
         if song_count:
             return song_count
+        # else:
+        #     return "Not Found!"
+
+    def BSTree(self):
+        self.BST = AVLTree()
+        start = time.time()
+        for song in self.song_array:
+            node = Node(song.title)
+            self.BST.insert(node)
+        end = time.time()
+        self.bst_buildTime = end - start
+        print(f"\nIt took {self.bst_buildTime} to build BST")
+
+        if self.BST.root:
+            return print(self.BST.root.getHeight())
         else:
-            print(f"\nNot found!")
+            return 0
 
-    def quickSort(self):
-        """
-        Quick sort algorithm to sort the song database based on the song title
-        Once sorted --> the status of the Boolean variable is changed
-        :return:
-        :rtype:
-        """
-        arr = self.song_array
-        quickS(arr, 0, self.library_size - 1)
-        self.library_isSorted = True
+    def printBST(self):
+        # print(self.BST)
+        print(self.BST)
 
-        # j = 1
-        # r = (self.song_array[:10])
-        # for i in r:
-        #     print(i.title)
+    def searchBST(self, query):
+        curr_root = self.BST.root
+        while curr_root is not None:
+
+            try:
+                if curr_root.key == query:
+                    return curr_root.key
+
+                if curr_root.key > query:
+                    curr_root = curr_root.left
+                else:
+                    curr_root = curr_root.right
+
+            except AttributeError:
+                return None
 
     def random_songs(self):
         """
@@ -130,7 +156,6 @@ class SongLibrary:
 
         songs_random = random.sample(self.song_array, k=100)
         songs_random = [song_obj.title for song_obj in songs_random]
-        # print(songs_random[:5])
         return songs_random
 
     def performSearches(self):
@@ -138,18 +163,43 @@ class SongLibrary:
         Performs all required searches in the sorted database for those 100
         songs. Record the total time spent on the linear searches.
         """
-        time_start = time.time()
-        for song_title in self.random_songs():
-            self.linearSearch(query=song_title, attribute='title')
-        time_end = time.time()
-        print(f"\nLinear Search took a total of {time_end - time_start} secs for 100 Random Songs")
+        random_songs = self.random_songs()
+        print()
+        print(random_songs[:5])
 
-    def BST(self):
-        pass
+        linear_start = time.time()
+        for song_title in random_songs:
+            self.linearSearch(query=song_title, attribute="title")
+        linear_end = time.time()
+        self.linear_runtime = linear_end - linear_start
+        print(
+            f"\nLinear Search took a total of {self.linear_runtime} secs for 100 Random Songs"
+        )
+
+        bst_start = time.time()
+        for song_title in random_songs:
+            self.searchBST(query=song_title)
+        bst_end = time.time()
+        self.bst_runtime = bst_end - bst_start
+        print(
+            f"\nBinary Search took a total of {self.bst_runtime} secs for 100 Random Songs"
+        )
+
+    def calculations(self):
+        print(self.bst_runtime)
+        print(self.linear_runtime)
+        print(self.bst_buildTime)
+
+        # n * (linear_runtime / 100)  > bst_buildTime + bst_runtime
+        # n > (bst_buildTime + bst_runtime) / (linear_runtime / 100)
+        n = (self.bst_buildTime + self.bst_runtime) / self.linear_runtime
+        print("n:", n)
+        # print(math.floor(n))
+        print(math.floor(n))
 
 
-if __name__ == '__main__':
-    file = 'TenKsongs.csv'
+if __name__ == "__main__":
+    file = "TenKsongs.csv"
     SongLib = SongLibrary()
     loaded_library = SongLib.loadLibrary(file)
 
@@ -162,6 +212,27 @@ if __name__ == '__main__':
 
     # print(SongLib.linearSearch('Bob Dylan', 'artist'))
     # print(SongLib.linearSearch('A Boy Named Sue', 'title'))
+    # print(SongLib.linearSearch('Fake Song', 'title'))
+    # SongLib.searchBST("""Hard Rain's Gonna Fall""")
 
     SongLib.quickSort()
-    SongLib.performSearches()
+    SongLib.BSTree()
+    # SongLib.printBST()
+
+    # SongLib.performSearches()
+    # SongLib.calculations()
+
+    # res = []
+    # for i in range(100):
+    #     SongLib.quickSort()
+    #     SongLib.BSTree()
+    #     # SongLib.printBST()
+    #     SongLib.performSearches()
+    #     res.append(SongLib.calculations())
+    # print(res)
+    # print(sum(res)/len(res))
+    # 1.27, 1.5, 1.something
+"""
+1. average time? that is for each search, append in res? or total 100 searchers? that is avg_linear / 100
+2. 
+"""
