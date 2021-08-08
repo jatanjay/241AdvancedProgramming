@@ -25,6 +25,6 @@ class Song:
         :rtype:
         """
         print(
-            f" \n Song Name : {self.title}\n Artist : {self.artist}\n Time Durations : {self.song_duration}\n Song Id "
+            f"Song Name : {self.title}\nArtist : {self.artist}\nTime Durations : {self.song_duration}\nSong Id "
             f": "
             f"{self.track_ID}")
