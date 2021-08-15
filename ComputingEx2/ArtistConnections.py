@@ -43,13 +43,13 @@ class ArtistConnections:
         #     if m != h:
         #         print(m, h, a)
 
-    def searchArtists(self, artist):
+    def searchArtists(self, artist_name):
 
-        song_len = len(self.g.vert_dict[artist].songs)
-        collabArtists = [coArtist.artist for coArtist in self.g.get_vertex(artist).coArtists]
-        collabArtists = [CoArtist for CoArtist in collabArtists if CoArtist != artist]
+        song_len = len(self.g.vert_dict[artist_name].songs)
+        res = set([coArtist.artist for coArtist in self.g.get_vertex(artist_name).coArtists])
+        coArtists = [CoArtist for CoArtist in res if CoArtist != artist_name]
 
-        return song_len, sorted(set(collabArtists))
+        return song_len, sorted(coArtists)
 
     def findNewFriends(self, artist_name):
 
@@ -72,7 +72,26 @@ class ArtistConnections:
     def recommendNewCollaborator(self, artist_name):
         two_hop_artist = self.findNewFriends(artist_name)
         coArtists_for_Given_Artists = self.searchArtists(artist_name)[1]
-        res = []
+        songs_written = {}
+        """
+        Some two hop artists have written songs with multiple one hop artists. 
+        Thus, the total number of collaborations between that two hop artist and the one hop artists 
+        should be the sum of those collaborations.
+        """
+        for coArtist in coArtists_for_Given_Artists:
+            curr = coArtist
+            fly = {k.artist: v for k, v in self.g.vert_dict[curr].coArtists.items()}
+            for twoHopArtist in two_hop_artist:
+                if twoHopArtist in fly:
+                    key = fly[twoHopArtist]
+                    if twoHopArtist in songs_written:
+                        songs_written[twoHopArtist] += key
+                    else:
+                        songs_written[twoHopArtist] = key
+        return sorted(songs_written.items(), reverse=True, key=lambda x: x[1])[0]
+
+    def shortestPath(self, artist_name):
+        pass
 
 
 if __name__ == '__main__':
@@ -81,5 +100,5 @@ if __name__ == '__main__':
     artistGraph.loadGraph(file)
     # print(artistGraph.searchArtists("Santana"))
     # print(artistGraph.findNewFriends("Santana"))
-    # print(artistGraph.recommendNewCollaborator("Green Day"))
+    # print(artistGraph.recommendNewCollaborator("Mariah Carey"))
     # print(artistGraph.shortest_path("Mariah Carey"))
