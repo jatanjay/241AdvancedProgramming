@@ -17,18 +17,26 @@ class Vertex:
         self.coArtists = {}
 
     def __str__(self):
-        return str(self.artist) + ' is connected to : ' + str([x for x in self.coArtists])
+        return str(self.artist) + ' is connected to : ' + str([x.artist for x in self.coArtists])
 
     def add_neighbor(self, neighbor, weight=0):
-        self.coArtists[neighbor.artist] = weight
+        if neighbor not in self.coArtists:
+            self.coArtists[neighbor] = weight
+        else:
+            curr_weight = self.coArtists[neighbor]
+            # print(f"curr_weight for {neighbor} = {curr_weight} and will be changed to {curr_weight + 1}")
+            self.coArtists[neighbor] = curr_weight + 1
 
     def get_connections(self):
         return self.coArtists.keys()
 
     def get_weight(self, neighbor):
-        return self.coArtists[neighbor.artist]
+        return self.coArtists[neighbor]
 
     def getArtistName(self):
+        return self.artist
+
+    def getName(self):
         return self.artist
 
     def update_songs(self, song_title):

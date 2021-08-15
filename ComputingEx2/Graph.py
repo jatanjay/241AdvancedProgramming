@@ -28,6 +28,12 @@ class Graph:
         else:
             return None
 
+    def __iter__(self):
+        return iter(self.vert_dict.values())
+
+    def __contains__(self, n):
+        return n in self.vert_dict
+
     def add_edge(self, from_vertex, to_vertex, cost=0):
         if from_vertex not in self.vert_dict:
             self.add_vertex(from_vertex)
@@ -36,13 +42,6 @@ class Graph:
         self.vert_dict[from_vertex].add_neighbor(self.vert_dict[to_vertex], cost)
         self.vert_dict[to_vertex].add_neighbor(self.vert_dict[from_vertex], cost)
 
-    # def update_edge(self,from_vertex, to_vertex, cost):
-
     def get_vertices(self):
         return self.vert_dict.keys()
 
-    def __iter__(self):
-        return iter(self.vert_dict.values())
-
-    def __contains__(self, n):
-        return n in self.vert_dict
