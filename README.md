@@ -1,4 +1,4 @@
-# [Data Structures & Algorithms Projects](https://github.com/jatanjay/DataStruc_Algorithms_Projects)
+# [Six Degrees](https://github.com/jatanjay/sixdegrees)
 
 ## Project 1: Modeling 10K Song & Artist Dataset
 - Structuring the dataset as a BST/AVL and analyzing the effects of algorithms like BFS and DFS.
