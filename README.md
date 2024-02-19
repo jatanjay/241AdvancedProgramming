@@ -5,3 +5,5 @@
 
 ## Project 2: Suggesting New Collaboration Artists
 - Leveraging the concept of 6 Degrees of Connection.
+
+[^link]: <a href="https://jatanjay.github.io/jatanjay/projects">Home</a>
