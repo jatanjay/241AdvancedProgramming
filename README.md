@@ -5,4 +5,4 @@
 - Leveraging the concept of 6 Degrees of Connection.
 
 [repo](https://github.com/jatanjay/sixdegrees) \
-[home](https://jatanjay.github.io/jatanjay/projects/)
+[home](https://jatanjay.github.io/projects/)
